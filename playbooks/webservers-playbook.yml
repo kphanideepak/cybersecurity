@@ -1,0 +1,35 @@
+---
+  - name: Webservers playbook
+    hosts: webservers
+    become: true
+    tasks:
+
+    - name: Install docker.io  (state=present is optional)
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Install python-pip
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Install Docker python module
+      pip:
+        name: docker
+        state: present
+
+    - name: Install DVWA
+      docker_container:
+        image: cyberxsecurity/dvwa
+        name: dvwa
+        state: started
+        published_ports: 80:80
+        restart_policy: always
+
+    - name: start on VM restart
+      systemd:
+        name: docker
+        enabled: yes
+        masked: no
