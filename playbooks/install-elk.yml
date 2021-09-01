@@ -25,11 +25,19 @@
         name: docker
         state: present
 
-      # Use command module
+      # Use command module - this command increases the virtual memory for the current session, to make it more permenant, use the next command
     - name: Increase virtual memory
       command: sysctl -w vm.max_map_count=262144
+      
+      # Use sysctl module - this command makes the setting persistent on system restart.
+    - name: Use more memory
+      sysctl:
+        name: vm.max_map_count
+        value: 262144
+        state: present
+        reload: yes
 
-      # Use sysctl module
+      # Use sysctl module - not sure how useful this command is but didn't break the setup..
     - name: Use more memory
       sysctl:
         name: vm.overcommit_memory
